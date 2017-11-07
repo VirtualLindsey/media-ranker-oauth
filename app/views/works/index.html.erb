@@ -1,4 +1,4 @@
-<% if @login_user %>
+
 <h3>List of works</h3>
 
 <% @works_by_category.each do |category, works| %>
@@ -31,4 +31,3 @@
 
 <%= link_to "View top media", root_path, class: "button" %>
 <%= link_to "Add a new work", new_work_path, class: "button" %>
-<% end %>

@@ -1,4 +1,4 @@
-<% if @login_user %>
+
 <h3>User Summary: <%= link_to @user.username, user_path(@user) %></h3>
 <p>Joined site <%= render_date @user.created_at %></p>
 
@@ -28,4 +28,3 @@
 
 <%= link_to "See all Users", users_path, class: "button" %>
 <%= link_to "Back to Media List", root_path, class: "button" %>
-<% end %>

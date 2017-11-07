@@ -8,8 +8,17 @@ class SessionsController < ApplicationController
     if auth_hash['uid']
       @user = User.find_by(uid: auth_hash[:uid], provider: 'github')
       if @user.nil?
-        # User doesn't match anything in the DB
-        # Attempt to create a new user
+        user = User.new
+        user.uid = auth_hash['uid']
+        user.email = auth_hash['info']['email']
+        user.username = auth_hash['info']['nickname']
+        if user.save
+          flash[:success] = "Created new user: #{user.username}"
+          redirect_to root_path
+        else
+          flash[:error] = "Could not save new user: #{user.username}"
+          redirect_to root_path
+        end
       else
         flash[:success] = "Logged in successfully"
         redirect_to root_path
