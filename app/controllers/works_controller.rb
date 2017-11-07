@@ -33,6 +33,7 @@ class WorksController < ApplicationController
   def create
     if logged_in
       @work = Work.new(media_params)
+      @work.creator = User.find(session[:user_id]).username
       @media_category = @work.category
       if @work.save
         flash[:status] = :success
