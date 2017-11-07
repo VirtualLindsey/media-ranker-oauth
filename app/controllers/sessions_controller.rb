@@ -9,10 +9,12 @@ class SessionsController < ApplicationController
       @user = User.find_by(uid: auth_hash[:uid], provider: 'github')
       if @user.nil?
         user = User.new
+        user.provider = 'github'
         user.uid = auth_hash['uid']
         user.email = auth_hash['info']['email']
         user.username = auth_hash['info']['nickname']
         if user.save
+          session[:user_id] = user.id
           flash[:success] = "Created new user: #{user.username}"
           redirect_to root_path
         else
@@ -20,6 +22,7 @@ class SessionsController < ApplicationController
           redirect_to root_path
         end
       else
+        session[:user_id] = user.id
         flash[:success] = "Logged in successfully"
         redirect_to root_path
       end
@@ -27,7 +30,9 @@ class SessionsController < ApplicationController
       flash[:error] = "Could not log in"
       redirect_to root_path
     end
+
   end
+
 
   def login
     username = params[:username]
