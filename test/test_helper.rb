@@ -1,3 +1,6 @@
+require 'simplecov'
+SimpleCov.start 'rails'
+
 ENV["RAILS_ENV"] = "test"
 require File.expand_path("../../config/environment", __FILE__)
 require "rails/test_help"
@@ -54,6 +57,6 @@ class ActiveSupport::TestCase
 
   def login(user)
     OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(user))
-    get auth_callback_path(:github)
+    get login_path(:github)
   end
 end

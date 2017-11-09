@@ -62,34 +62,43 @@ class WorksController < ApplicationController
   end
 
   def edit
+    if logged_in == false
+      redirect_to root_path
+    end
   end
 
   def update
-    @work.update_attributes(media_params)
-    if @work.save
-      flash[:status] = :success
-      flash[:result_text] = "Successfully updated #{@media_category.singularize} #{@work.id}"
-      redirect_to work_path(@work)
-    else
-      flash.now[:status] = :failure
-      flash.now[:result_text] = "Could not update #{@media_category.singularize}"
-      flash.now[:messages] = @work.errors.messages
-      render :edit, status: :not_found
+    if logged_in
+      if @work.creator == session[:user_id]
+        @work.update_attributes(media_params)
+        if @work.save
+          flash[:status] = :success
+          flash[:result_text] = "Successfully updated #{@media_category.singularize} #{@work.id}"
+          redirect_to work_path(@work)
+        else
+          flash.now[:status] = :failure
+          flash.now[:result_text] = "Could not update #{@media_category.singularize}"
+          flash.now[:messages] = @work.errors.messages
+          render :edit, status: :not_found
+        end
+      else
+        redirect_to work_path(@work.id)
+      end
     end
   end
 
   def destroy
-    @work.destroy
-    flash[:status] = :success
-    flash[:result_text] = "Successfully destroyed #{@media_category.singularize} #{@work.id}"
-    redirect_to root_path
+    if logged_in
+      if session[:user_id] == @work.creator
+        @work.destroy
+        flash[:status] = :success
+        flash[:result_text] = "Successfully destroyed #{@media_category.singularize} #{@work.id}"
+        redirect_to root_path
+      end
+    end
   end
 
   def upvote
-    # Most of these varied paths end in failure
-    # Something tragically beautiful about the whole thing
-    # For status codes, see
-    # http://stackoverflow.com/questions/3825990/http-response-code-for-post-when-resource-already-exists
     flash[:status] = :failure
     if @login_user
       vote = Vote.new(user: @login_user, work: @work)

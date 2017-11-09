@@ -21,6 +21,13 @@ poodr:
   publication_year: 2012
   category: book
 
+lindsey:
+  title: Testing Ruby
+  creator: lindsey
+  description: lindsey description
+  publication_year: 2012
+  category: book
+
 movie:
   title: test movie - has only required fields
   category: movie
