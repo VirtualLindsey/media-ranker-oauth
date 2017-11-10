@@ -14,23 +14,23 @@
         22,
         22,
         22,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
         null,
         0,
         0,
         null,
         null,
-        21,
-        21,
-        21,
+        22,
+        22,
+        22,
         null,
         null,
         0,
@@ -241,7 +241,7 @@
         null,
         1,
         10,
-        6,
+        10,
         9,
         null,
         null
@@ -320,30 +320,8 @@
         null,
         null,
         null
-      ],
-      "/Users/lindsey/Desktop/Ada/media-ranker-oauth/app/channels/application_cable/channel.rb": [
-        0,
-        0,
-        0,
-        0
-      ],
-      "/Users/lindsey/Desktop/Ada/media-ranker-oauth/app/channels/application_cable/connection.rb": [
-        0,
-        0,
-        0,
-        0
-      ],
-      "/Users/lindsey/Desktop/Ada/media-ranker-oauth/app/jobs/application_job.rb": [
-        0,
-        0
-      ],
-      "/Users/lindsey/Desktop/Ada/media-ranker-oauth/app/mailers/application_mailer.rb": [
-        0,
-        0,
-        0,
-        0
       ]
     },
-    "timestamp": 1510276633
+    "timestamp": 1510276720
   }
 }
