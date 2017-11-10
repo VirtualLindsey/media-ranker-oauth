@@ -9,12 +9,13 @@ class ApplicationController < ActionController::Base
   end
 
 private
+=begin
   def find_user
     if session[:user_id]
       @login_user = User.find_by(id: session[:user_id])
     end
   end
-
+=end
   def require_login
     @user = User.find_by(id: session[:user_id])
     unless @user
@@ -23,8 +24,9 @@ private
       redirect_to root_path
     end
   end
-
+=begin
   def logged_in
     return session[:user_id] != nil
   end
+=end
 end

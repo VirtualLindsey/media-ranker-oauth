@@ -83,7 +83,7 @@ describe WorksController do
         post upvote_path(work)
 
         Vote.count.must_equal count+1
-        
+
       end
 
       it "prevents duplicate votes" do
@@ -145,6 +145,25 @@ describe WorksController do
         updated_work.description.must_equal "new description"
         updated_work.publication_year.must_equal 2017
         updated_work.category.must_equal "book"
+      end
+
+      it "allows updates when creator and session match" do
+        work = Work.find_by(creator: 'lindsey')
+
+        params = {
+          work:{
+            title: nil,
+            creator: nil,
+            description: nil,
+            publication_year: nil,
+            category: nil
+          }
+        }
+
+        patch work_path(work), params: params
+        must_respond_with :not_found
+
+
       end
 
 
