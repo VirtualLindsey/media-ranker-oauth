@@ -33,7 +33,7 @@ class SessionsController < ApplicationController
 
   end
 
-
+=begin
   def login
     username = params[:username]
     if username and user = User.find_by(username: username)
@@ -56,7 +56,7 @@ class SessionsController < ApplicationController
     end
     redirect_to root_path
   end
-
+=end
   def logout
     session[:user_id] = nil
     flash[:status] = :success

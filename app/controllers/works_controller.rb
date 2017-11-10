@@ -48,6 +48,7 @@ class WorksController < ApplicationController
     else
       flash[:status] = :error
       flash[:result_text] = "You need to be logged in to do this"
+      redirect_to root_path
     end
   end
 
@@ -69,7 +70,7 @@ class WorksController < ApplicationController
 
   def update
     if logged_in
-      if @work.creator == session[:user_id]
+      if @work.creator == User.find(session[:user_id]).username
         @work.update_attributes(media_params)
         if @work.save
           flash[:status] = :success
@@ -89,12 +90,16 @@ class WorksController < ApplicationController
 
   def destroy
     if logged_in
-      if session[:user_id] == @work.creator
+      if User.find(session[:user_id]).username == @work.creator
         @work.destroy
         flash[:status] = :success
         flash[:result_text] = "Successfully destroyed #{@media_category.singularize} #{@work.id}"
         redirect_to root_path
+      else
+        redirect_to works_path(@work)
       end
+    else
+      redirect_to root_path
     end
   end
 

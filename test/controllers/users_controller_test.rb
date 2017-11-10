@@ -7,6 +7,11 @@ describe UsersController do
       login(@user)
     end
 
+    it "is able to view users page" do
+      get users_path
+      must_respond_with :success
+    end
+
     it "succeeds with many users" do
       # Assumption: there are many users in the DB
       User.count.must_be :>, 0

@@ -1,6 +1,281 @@
 require 'test_helper'
 
 describe WorksController do
+  describe "functions while logged in" do
+    before do
+      @user = users(:lindsey)
+      login(@user)
+    end
+
+    describe "basic page loads" do
+      it "is able to view works page" do
+        get works_path
+        must_respond_with :success
+      end
+
+      it "is able to view single work page" do
+        work = Work.first
+
+        get work_path(work)
+        must_respond_with :success
+      end
+
+      it "can load the root path" do
+        get root_path
+        must_respond_with :success
+      end
+
+      it "can make new work skeleton" do
+        get new_work_path
+        must_respond_with :success
+      end
+    end
+
+    describe "create" do
+      it "is able to create new work" do
+        params = {
+          work:{
+            title: "brand new title",
+            creator: "bob",
+            description: "brand new description",
+            publication_year: 2017,
+            category: "book"
+          }
+        }
+
+        count = Work.count
+        post works_path, params: params
+        work = Work.last
+
+        Work.count.must_equal count+1
+        work.title.must_equal "brand new title"
+        work.creator.must_equal "lindsey"
+        work.description.must_equal "brand new description"
+        work.publication_year.must_equal 2017
+        work.category.must_equal "book"
+      end
+
+      it "does not create new work with missing params" do
+        params = {
+          work:{
+            creator: "bob",
+            description: "brand new description",
+            category: "book"
+          }
+        }
+
+        count = Work.count
+        post works_path, params: params
+        must_respond_with :bad_request
+        Work.count.must_equal count
+      end
+    end
+
+    describe "Upvote" do
+      it "is able to upvote work" do
+        work = Work.first
+        count = Vote.count
+
+        post upvote_path(work)
+
+        Vote.count.must_equal count+1
+        must_redirect_to work_path(work)
+      end
+
+      it "prevents duplicate votes" do
+        work = Work.first
+        count = Vote.count
+
+        post upvote_path(work)
+
+        Vote.count.must_equal count+1
+        must_redirect_to work_path(work)
+
+        post upvote_path(work)
+        Vote.count.must_equal count+1
+      end
+    end
+
+    describe "Delete" do
+      it "deletes a work when the creator matches" do
+        work = Work.find_by(creator: 'lindsey')
+        count = Work.count
+
+        delete work_path(work)
+
+        must_redirect_to root_path
+        Work.count.must_equal count-1
+      end
+
+      it "does not delete work when creator does not match" do
+        work = Work.first
+        count = Work.count
+
+        delete work_path(work)
+
+        must_redirect_to works_path(work)
+        Work.count.must_equal count
+      end
+    end
+
+    describe "Update" do
+      it "allows updates when creator and session match" do
+        work = Work.find_by(creator: 'lindsey')
+
+        params = {
+          work:{
+            title: "new title",
+            creator: "lindsey",
+            description: "new description",
+            publication_year: 2017,
+            category: "book"
+          }
+        }
+
+        patch work_path(work), params: params
+        must_redirect_to work_path(work.id)
+
+        updated_work = Work.find(work.id)
+        updated_work.title.must_equal "new title"
+        updated_work.creator.must_equal "lindsey"
+        updated_work.description.must_equal "new description"
+        updated_work.publication_year.must_equal 2017
+        updated_work.category.must_equal "book"
+      end
+
+
+      it "prevents updates when creator does not match session" do
+        work = Work.first
+
+        params = {
+          work:{
+            title: "new title",
+            creator: "lindsey",
+            description: "new description",
+            publication_year: 2017,
+            category: "book"
+          }
+        }
+
+        patch work_path(work), params: params
+        must_redirect_to work_path(work.id)
+
+        updated_work = Work.first
+
+        updated_work.title.must_equal work.title
+        updated_work.creator.must_equal work.creator
+        updated_work.description.must_equal work.description
+        updated_work.publication_year.must_equal work.publication_year
+        updated_work.category.must_equal work.category
+      end
+    end
+  end
+
+  describe "functions while not logged in" do
+    describe "root" do
+      it "gets root path" do
+        get root_path
+        must_respond_with :success
+      end
+
+    end
+
+    describe "index" do
+      it "does not get index while logged out" do
+        get works_path
+        must_redirect_to root_path
+      end
+    end
+
+    describe "new" do
+      it "does not get new page while logged out" do
+        get new_work_path
+        must_redirect_to root_path
+      end
+    end
+
+    describe "create" do
+      it "does not create new work while logged out" do
+        params = {
+          work:{
+            title: "brand new title",
+            creator: "bob",
+            description: "brand new description",
+            publication_year: 2017,
+            category: "book"
+          }
+        }
+
+        post works_path, params: params
+        must_redirect_to root_path
+      end
+    end
+
+    describe "show" do
+      it "does not get show page while logged out" do
+        work = Work.first
+
+        get work_path(work)
+        must_redirect_to root_path
+      end
+    end
+
+    describe "edit" do
+      it "does not get show page while logged out" do
+        work = Work.first
+
+        get edit_work_path(work)
+        must_redirect_to root_path
+      end
+
+    end
+
+    describe "update" do
+      it "does not get show page while logged out" do
+        work = Work.first
+
+        params = {
+          work:{
+            title: "brand new title",
+            creator: "bob",
+            description: "brand new description",
+            publication_year: 2017,
+            category: "book"
+          }
+        }
+
+        patch work_path(work), params: params
+      end
+
+    end
+
+    describe "destroy" do
+      it "does not get show page while logged out" do
+        work = Work.first
+        count = Work.count
+
+        delete work_path(work)
+
+        Work.count.must_equal count
+        must_redirect_to root_path
+      end
+
+    end
+
+    describe "upvote" do
+      it "does not get show page while logged out" do
+        work = Work.first
+        count = Vote.count
+
+        post upvote_path(work)
+
+        must_respond_with :unauthorized
+        Vote.count.must_equal count
+      end
+
+    end
+  end
+=begin
   describe "root" do
     it "succeeds with all media types" do
       # Precondition: there is at least one media of each category
@@ -258,4 +533,5 @@ describe WorksController do
       work.votes.count.must_equal start_vote_count
     end
   end
+=end
 end
