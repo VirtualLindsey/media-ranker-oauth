@@ -83,7 +83,7 @@ describe WorksController do
         post upvote_path(work)
 
         Vote.count.must_equal count+1
-        must_redirect_to work_path(work)
+        
       end
 
       it "prevents duplicate votes" do
@@ -273,7 +273,8 @@ describe WorksController do
 
         post upvote_path(work)
 
-        must_respond_with :unauthorized
+        must_respond_with :redirect
+        must_redirect_to root_path
         Vote.count.must_equal count
       end
 

@@ -26,8 +26,9 @@ describe UsersController do
       User.destroy_all
 
       get users_path
-      must_respond_with :success
-      
+      must_respond_with :redirect
+      must_redirect_to root_path
+
     end
 
     describe "show" do
