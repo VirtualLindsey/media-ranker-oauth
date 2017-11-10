@@ -17,7 +17,7 @@ describe UsersController do
       User.count.must_be :>, 0
 
       get users_path
-      must_respond_with :redirect
+      must_respond_with :success
     end
 
     it "succeeds with no users" do
@@ -26,20 +26,20 @@ describe UsersController do
       User.destroy_all
 
       get users_path
-      must_respond_with :redirect
-      must_redirect_to root_path
+      must_respond_with :success
+      
+    end
+
+    describe "show" do
+      it "succeeds for an extant user not logged in" do
+        get user_path(User.first)
+        must_respond_with :success
+
+      end
     end
   end
 
-  describe "show" do
-    it "succeeds for an extant user not logged in" do
-      get user_path(User.first)
-      must_respond_with :redirect
-      must_redirect_to root_path
-    end
 
-
-  end
 
   describe "index" do
     it "fails with many users not logged in" do

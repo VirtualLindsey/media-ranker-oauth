@@ -29,6 +29,10 @@ describe WorksController do
         get new_work_path
         must_respond_with :success
       end
+
+      it "shows 404 for invalid page" do
+        get work_path(98123982)
+      end
     end
 
     describe "create" do
